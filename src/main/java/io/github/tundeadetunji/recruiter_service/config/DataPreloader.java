@@ -12,24 +12,29 @@ import io.github.tundeadetunji.recruiter_service.service.PostService;
 import io.github.tundeadetunji.recruiter_service.service.RecruiterService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class DataPreloader {
+public class DataPreloader implements ApplicationRunner {
 
-    /*private final RecruiterService recruiterService;
+    private final RecruiterService recruiterService;
     private final JobService jobService;
-    private final PostService postService;*/
+    private final PostService postService;
 
-    @PostConstruct
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        preloadData();
+    }
+
     public void preloadData() {
-        //for dev only
 
         // Recruiter 1
-        /*Recruiter r1 = recruiterService.registerRecruiter(CreateRecruiterDto.builder()
+        Recruiter r1 = recruiterService.registerRecruiter(CreateRecruiterDto.builder()
                 .firstName("Aisha").middleName("Oluwatoyin").lastName("Suleiman")
                 .email("aisha.suleiman@quickhire.com").phones(List.of("+2348012345678"))
                 .department("Tech").build());
@@ -44,10 +49,10 @@ public class DataPreloader {
         Post p1 = postService.createJobPost(PostDto.builder()
                 .recruiterId(r1.getId()).jobId(j1.getId())
                 .postStatus(PostStatus.ACTIVE)
-                .applications(List.of()).build());*/
+                .applications(List.of()).build());
 
         // Recruiter 2
-        /*Recruiter r2 = recruiterService.registerRecruiter(CreateRecruiterDto.builder()
+        Recruiter r2 = recruiterService.registerRecruiter(CreateRecruiterDto.builder()
                 .firstName("Emeka").middleName("John").lastName("Okafor")
                 .email("emeka.okafor@quickhire.com").phones(List.of("+2348023456789"))
                 .department("Design").build());
@@ -64,6 +69,7 @@ public class DataPreloader {
                 .postStatus(PostStatus.ACTIVE)
                 .applications(List.of()).build());
 
-        System.out.println("Recruiters, jobs, and posts preloaded.");*/
+        System.out.println("Recruiters, jobs, and posts preloaded.");
     }
+
 }
