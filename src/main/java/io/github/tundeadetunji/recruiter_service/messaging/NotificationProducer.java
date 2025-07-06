@@ -18,13 +18,11 @@ public class NotificationProducer {
     private final ObjectMapper objectMapper;
 
     public void notifyAdmin(NotificationMessage message) {
-//        rabbitTemplate.convertAndSend(RabbitMqConfig.EXCHANGE, RabbitMqConfig.ADMIN_ROUTING_KEY, message);
 
         try {
             String json = objectMapper.writeValueAsString(message);
             rabbitTemplate.convertAndSend(EXCHANGE, "recruiter.notify", json); // keep for recruiter
             rabbitTemplate.convertAndSend(EXCHANGE, "admin.notify", json);     // send to admin
-            //rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, json);
         } catch (JsonProcessingException e) {
             //in production, log this
         }
