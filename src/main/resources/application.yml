@@ -1,0 +1,130 @@
+#server:
+#  port: 8082
+#
+#spring:
+#  application:
+#    name: recruiter-service
+#
+#  datasource:
+#    url: jdbc:h2:mem:recruiter-db
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
+#
+#  h2:
+#    console:
+#      enabled: true
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#    show-sql: true
+#
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
+#
+#springdoc:
+#  swagger-ui:
+#    path: /swagger-ui.html
+#
+#storage:
+#  backend: h2
+#
+#resilience4j:
+#  circuitbreaker:
+#    instances:
+#      recruiterNotify:
+#        slidingWindowSize: 5
+#        minimumNumberOfCalls: 3
+#        failureRateThreshold: 50
+#        waitDurationInOpenState: 10s
+#        permittedNumberOfCallsInHalfOpenState: 2
+#        automaticTransitionFromOpenToHalfOpenEnabled: true
+#
+#mq:
+#  queue: recruiter.notifications
+#  exchange: app.exchange
+#  routing-key: recruiter.notify
+#
+#admin:
+#  queue: admin.notifications
+#  routing-key: admin.notify
+#
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: health,info,prometheus
+#  metrics:
+#    export:
+#      prometheus:
+#        enabled: true
+
+
+server:
+  port: 8082
+
+spring:
+  application:
+    name: recruiter-service
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST}
+    port: ${SPRING_RABBITMQ_PORT}
+    username: ${SPRING_RABBITMQ_USERNAME}
+    password: ${SPRING_RABBITMQ_PASSWORD}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+storage:
+  backend: postgres
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      recruiterNotify:
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 3
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+mq:
+  queue: recruiter.notifications
+  exchange: app.exchange
+  routing-key: recruiter.notify
+
+admin:
+  queue: admin.notifications
+  routing-key: admin.notify
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true

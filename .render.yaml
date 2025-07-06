@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: recruiter-service
+    env: docker
+    region: oregon
+    plan: free
+    dockerfilePath: Dockerfile
+
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://dpg-d1kphkh5pdvs73b5lemg-a.oregon-postgres.render.com:5432/quickhire_db
+      - key: SPRING_DATASOURCE_USERNAME
+        value: quickhire_user
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: HF8K4oMzUiUzyeoQRg5Jese3TGHNmShE
+
+      - key: SPRING_RABBITMQ_HOST
+        value: gorilla.lmq.cloudamqp.com
+      - key: SPRING_RABBITMQ_PORT
+        value: 5671
+      - key: SPRING_RABBITMQ_USERNAME
+        value: sxozspkb
+      - key: SPRING_RABBITMQ_PASSWORD
+        value: HghT9RUmIFzoDzKr7tbyz_vgdcwEHzHJ
