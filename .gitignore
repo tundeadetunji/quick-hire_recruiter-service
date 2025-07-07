@@ -1,28 +1,31 @@
-/build/
-*/build/
+# === Build output ===
+/target/
+**/target/
 
-# Maven wrapper
-.mvn/wrapper/maven-wrapper.jar
+# === Maven ===
+.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+!/.mvn/wrapper/maven-wrapper.properties
+mvnw
+mvnw.cmd
 
-# IDEs
-.idea
+# === IntelliJ IDEA ===
+.idea/
+*.iws
 *.iml
 *.ipr
-*.iws
-.settings/
+.out/
+
+# === VS Code ===
 .vscode/
 
-# Eclipse / STS
-.apt_generated
-.classpath
-.factorypath
-.project
-.springBeans
-.sts4-cache
+# === Logs ===
+*.log
 
-# NetBeans
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# === OS files ===
+.DS_Store
+Thumbs.db
+
+# === Render-specific ===
+.env
+*.env

@@ -27,6 +27,9 @@ public class Job {
     private String minimumSalary;
     private String description;
 
+    @Version
+    private Long version;
+
     public static Job from(CreateJobDto dto, Recruiter recruiter) {
         return Job.builder()
                 .title(dto.getTitle())

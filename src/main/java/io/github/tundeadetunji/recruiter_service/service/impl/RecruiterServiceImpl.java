@@ -17,6 +17,7 @@ import static io.github.tundeadetunji.recruiter_service.constants.InlineStrings.
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class RecruiterServiceImpl implements RecruiterService {
     private final RecruiterStrategy recruiterStrategy;
     private final NotificationProducer notificationProducer;
 
+    @Transactional
     @Override
     public Recruiter registerRecruiter(CreateRecruiterDto dto) {
         Recruiter recruiter = recruiterStrategy.saveRecruiter(Recruiter.from(dto));

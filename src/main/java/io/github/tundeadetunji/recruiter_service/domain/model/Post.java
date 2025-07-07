@@ -43,6 +43,9 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CandidateApplication> applications = new ArrayList<>();
 
+    @Version
+    private Long version;
+
     public static Post from(Job job, Long recruiterId) {
         return Post.builder()
                 .job(job)

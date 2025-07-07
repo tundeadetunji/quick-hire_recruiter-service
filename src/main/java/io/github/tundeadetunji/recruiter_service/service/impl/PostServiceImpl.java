@@ -24,6 +24,7 @@ import static io.github.tundeadetunji.recruiter_service.constants.InlineStrings.
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class PostServiceImpl implements PostService {
     private final JobStrategy jobStrategy;
     private final NotificationProducer notificationProducer;
 
+    @Transactional
     @Override
     public Post createJobPost(PostDto dto) {
         Job job = jobStrategy.findJobById(dto.getJobId())
@@ -65,6 +67,7 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
+    @Transactional
     @Override
     public Post changeJobPostStatus(Long postId, Long recruiterId, PostStatus status) {
         Post post = findJobPost(postId, recruiterId);
@@ -95,6 +98,7 @@ public class PostServiceImpl implements PostService {
                 .toList();*/
     }
 
+    @Transactional
     @Override
     public Post moveApplicationsToStatus(Long postId, ApplicationStatus status, List<CandidateApplication> applications) {
         Post post = postStrategy.findJobPostById(postId)
@@ -114,6 +118,7 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
+    @Transactional
     @Override
     public Post updatePost(Post post) {
         Post saved = postStrategy.findJobPostById(post.getId())

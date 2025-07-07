@@ -13,6 +13,7 @@ import io.github.tundeadetunji.recruiter_service.strategy.JobStrategy;
 import io.github.tundeadetunji.recruiter_service.strategy.RecruiterStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static io.github.tundeadetunji.recruiter_service.constants.ExceptionMessages.*;
 import static io.github.tundeadetunji.recruiter_service.constants.InlineStrings.NEW_JOB;
@@ -26,6 +27,7 @@ public class JobServiceImpl implements JobService {
     private final RecruiterStrategy recruiterStrategy;
     private final NotificationProducer notificationProducer;
 
+    @Transactional
     @Override
     public Job createJob(CreateJobDto dto) {
         Recruiter recruiter = recruiterStrategy.findRecruiterById(dto.getRecruiterId())
@@ -42,6 +44,7 @@ public class JobServiceImpl implements JobService {
         return job;
     }
 
+    @Transactional
     @Override
     public Job updateJob(Long jobId, UpdateJobDto dto, Long recruiterId) {
         Job job = jobStrategy.findJobById(jobId)
