@@ -8,6 +8,6 @@ public class ExceptionMessages {
     public static String UNAUTHORIZED_ACCESS = "Unauthorized access";
     public static String POST_NOT_FOUND = "Post not found";
     public static String NOTIFICATION_MESSAGE_PARSE_FAILURE = "Failed to parse NotificationMessage JSON";
-
+    public static String NOTIFICATION_SERVICE_DOWN = "RabbitMQ down";
 
 }

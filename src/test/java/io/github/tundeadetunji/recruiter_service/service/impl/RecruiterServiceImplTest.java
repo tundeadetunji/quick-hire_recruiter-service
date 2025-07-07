@@ -13,10 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static io.github.tundeadetunji.recruiter_service.constants.ExceptionMessages.NOTIFICATION_SERVICE_DOWN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RecruiterServiceImplTest {
@@ -50,4 +51,25 @@ class RecruiterServiceImplTest {
         verify(recruiterStrategy).saveRecruiter(any(Recruiter.class));
         verify(notificationProducer).notifyAdmin(any(NotificationMessage.class));
     }
+
+    @Test
+    void registerRecruiter_shouldRollback_whenNotificationFails() {
+        // Arrange
+        CreateRecruiterDto dto = CreateRecruiterDto.builder()
+                .firstName("Jill").lastName("Baker").email("jillb@quickhire.com")
+                .phones(List.of("+2348012345678")).department("IT").build();
+
+        Recruiter savedRecruiter = Recruiter.from(dto);
+        savedRecruiter.setId(2L);
+
+        when(recruiterStrategy.saveRecruiter(any())).thenReturn(savedRecruiter);
+        doThrow(new RuntimeException(NOTIFICATION_SERVICE_DOWN)).when(notificationProducer).notifyAdmin(any());
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> recruiterService.registerRecruiter(dto));
+
+        verify(recruiterStrategy).saveRecruiter(any());
+
+    }
+
 }
