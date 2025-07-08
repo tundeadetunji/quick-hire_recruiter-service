@@ -1,22 +1,24 @@
 ![CI](https://github.com/tundeadetunji/quick-hire_recruiter-service/actions/workflows/ci.yml/badge.svg)
 
-## 📬 Messaging and Observability
+## 📬 Messaging
 ## 🧪 Testing
 ## ⚙️ Concurrency & Transactions
 ## 📘 Pagination
 
 
-## 📬 Messaging and Observability
+## 📬 Messaging
 
-This service **publishes messages to RabbitMQ** when a recruiter or job post is created.
+This service both **sends and receives messages via RabbitMQ**.
 
-- When a recruiter is registered or a job is posted, a `NotificationMessage` is sent.
-- Messages are routed through `app.exchange` using keys like `recruiter.notify` and `admin.notify`.
-- The `admin-service` listens for these messages.
+- When a recruiter registers or posts/updates a job, a `NotificationMessage` is sent.
+  - One message goes to the `recruiter.notify` queue (local logging).
+  - Another is forwarded to the `admin.notify` queue (for admin logs).
+- When a candidate applies via `candidate-service`, this service **receives** a notification from RabbitMQ.
 
 To observe messaging:
-- Use Swagger to create a recruiter or post.
-- Then call `/admin/messages` to view received messages (or check logs).
+1. Trigger an application in `candidate-service` via Swagger.
+2. This service will log the message (via `NotificationListener`).
+3. Messages forwarded to `admin.notify` will appear via `/admin/messages`.
 
 ## 🧪 Testing
 
