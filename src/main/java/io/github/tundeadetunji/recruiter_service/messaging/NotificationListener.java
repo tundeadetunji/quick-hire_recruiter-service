@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NotificationListener {
 
-    //this is only for local dev/testing
-
-    /*@RabbitListener(queues = "#{recruiterQueue.name}")
+    @RabbitListener(queues = "#{recruiterQueue.name}")
     public void receive(String notificationMessage) {
         //in production, send to recruiter/stakeholders' email
 
@@ -26,5 +24,5 @@ public class NotificationListener {
         } catch (Exception e) {
             log.error("Failed to parse notification message: {}", e.getMessage());
         }
-    }*/
+    }
 }
