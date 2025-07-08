@@ -10,11 +10,11 @@ View the docs <a href="https://quick-hire-recruiter-service.onrender.com/swagger
 
 In this readme:
 
-### 📬 Messaging
-### 🧪 Testing
-### ⚙️ Concurrency & Transactions
-### 📊 Resilience4j Observability
-### 📘 Pagination
+#### 📬 Messaging
+#### 🧪 Testing
+#### ⚙️ Concurrency & Transactions
+#### 📊 Resilience4j Observability
+#### 📘 Pagination
 
 <br />
 <br />
