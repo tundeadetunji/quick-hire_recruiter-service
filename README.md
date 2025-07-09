@@ -1,114 +1,95 @@
 ![CI](https://github.com/tundeadetunji/quick-hire_recruiter-service/actions/workflows/ci.yml/badge.svg)
+![Java](https://img.shields.io/badge/Java-17-blue?logo=java)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen?logo=spring-boot)
+![RabbitMQ](https://img.shields.io/badge/Messaging-RabbitMQ-orange?logo=rabbitmq)
+![CI](https://github.com/tundeadetunji/quick-hire_recruiter-service/actions/workflows/ci.yml/badge.svg)
 
-# Recruiter Service of QuickHire+ microservices MVP
-With QuickHire+, Recruiters can create jobs, manage job posts, candidate applications.
-<br />
-View the docs <a href="https://quick-hire-recruiter-service.onrender.com/swagger-ui/index.html">here</a>.
+# 🧑‍💼 Recruiter Service – QuickHire+ Microservices MVP  
 
-<br />
-<br />
+With QuickHire+, recruiters can register, create jobs, publish posts, and receive candidate applications.
 
-In this readme:
+📄 API Docs: View Swagger UI
 
-#### 📬 Messaging
-#### 🧪 Testing
-#### ⚙️ Concurrency & Transactions
-#### 📊 Resilience4j Observability
-#### 📘 Pagination
+<br/>
+<br/>
 
-<br />
-<br />
-<br />
+```  
++-------------------+       RabbitMQ        +-------------------+
+|  Candidate Service|  ───────────────▶     |  Recruiter Service|
+|                   |       🔔 Notify       |                   |
+| - Apply to jobs   |◀───────────────       | - Manage Jobs     |
++-------------------+                      ◀| - Notify Admin    |
+                                            +-------------------+
+                                                   │
+                                                   ▼
+                                       +------------------------+
+                                       |    Admin Service       |
+                                       | - Logs notifications   |
+                                       | - In-memory store      |
+                                       +------------------------+
+```
 
-## 📬 Messaging
+---
 
-This service both **sends and receives messages via RabbitMQ**.
+📬 Messaging  
+This service **sends and receives** RabbitMQ messages:
 
-- When a recruiter registers or posts/updates a job, a `NotificationMessage` is sent.
-  - One message goes to the `recruiter.notify` queue (local logging).
-  - Another is forwarded to the `admin.notify` queue (for admin logs).
-- When a candidate applies via `candidate-service`, this service **receives** a notification from RabbitMQ.
+- Sends notifications for recruiter/job/post creation  
+- Receives application alerts from `candidate-service`  
+- Forwards messages to `admin-service` for logging
 
-To observe messaging:
-1. Trigger an application in `candidate-service` via Swagger.
-2. This service will log the message (via `NotificationListener`).
-3. Messages forwarded to `admin.notify` will appear via `/admin/messages`.
+🔍 To observe:
+1. Apply via candidate-service  
+2. Message logged here  
+3. Forwarded to `admin.notify` (visible in `admin-service`)
 
-<br />
-<br />
-<br />
+---
 
-## 🧪 Testing
+🧪 Testing  
+Uses JUnit 5, Mockito, and Spring’s `@WebMvcTest`.  
+CI powered by GitHub Actions.
 
-This service uses **JUnit 5**, **Mockito**, and Spring’s `@WebMvcTest` for lightweight HTTP endpoint testing.
+✅ What’s Covered
+- POST /api/v1/post/post  
+- NotificationProducer and rollback logic  
+- Recruiter registration + messaging
 
-Tests are automatically executed through GitHub Actions.
+---
 
-### ✅ What’s Covered
+⚙️ Concurrency & Transactions  
+Transactional integrity for:
 
-- Creating job posts (`POST /api/v1/post/post`)
-- Sending notifications to RabbitMQ (`NotificationProducer`)
-- Registering recruiters and triggering notifications
-- Rollback behavior when notification delivery fails
+- Job and post workflows  
+- Recruiter registration  
+- Application forwarding
 
-<br />
-<br />
-<br />
+🛡️ Uses `@Transactional` with `@Version` fields to prevent race conditions.
 
-## ⚙️ Concurrency & Transactions
+---
 
-This service coordinates multiple transactional workflows involving recruiters, jobs, and job posts:
+📊 Resilience4j Observability  
+Supports:
 
-- Creating or updating jobs
-- Publishing job posts and updating their status
-- Registering recruiters and moving candidate applications
+✅ Circuit Breakers  
+🔁 Retry Policies  
+⏱️ Rate Limiting  
 
-All major service methods are annotated with `@Transactional` to ensure database consistency and atomic messaging via RabbitMQ.
+Actuator endpoints (internal):
+- /actuator/resilience4j.circuitbreakers  
+- /actuator/resilience4j.retries  
+- /actuator/resilience4j.ratelimiters
 
-Entities like `Job` and `Post` use **optimistic locking** with `@Version` to guard against race conditions — preventing concurrent edits (e.g., post status changes or job updates) from silently overwriting one another.
+🧪 To test locally:
+- Provide env vars  
+- Or use `.env.local` with H2
 
-<br />
-<br />
-<br />
+---
 
-## 📊 Resilience4j Observability
+📘 Pagination  
+Supports pagination on:
 
-This service uses **Resilience4j** to handle transient failures with:
+- `GET /api/v1/recruiter`  
+- `GET /api/v1/post/{postId}/applications?status=APPLIED`
 
-- Circuit Breakers
-- Retry Policies
-- Rate Limiting
-
-You can observe real-time Resilience4j metrics using the built-in Spring Boot Actuator endpoints:
-
-- `/actuator/resilience4j.circuitbreakers`
-- `/actuator/resilience4j.retries`
-- `/actuator/resilience4j.ratelimiters`
-
-> ⚠️ These endpoints are **internal** and not exposed publicly on Render.
-
-### 🧪 Local Testing
-
-If testing locally, ensure:
-
-- You provide valid environment variables **or**
-- You temporarily switch to an in-memory H2 database (e.g. via `application-local.yml` or `.env.local`)
-
-This allows the app to boot and actuator endpoints to respond.
-
-<br />
-<br />
-<br />
-
-## 📘 Pagination
-
-This service supports pagination on relevant endpoints using Spring’s `Pageable` abstraction:
-
-- `GET /api/v1/recruiter` returns paged recruiter records.
-- `GET /api/v1/post/{postId}/applications?status=APPLIED` supports paginated viewing of job post applications filtered by status.
-
-To paginate results, include `page` and `size` query params:
-
-```http
-GET /api/v1/post/3/applications?status=APPLIED&page=0&size=10
-
+Example:
+`GET /api/v1/post/3/applications?status=APPLIED&page=0&size=10`
