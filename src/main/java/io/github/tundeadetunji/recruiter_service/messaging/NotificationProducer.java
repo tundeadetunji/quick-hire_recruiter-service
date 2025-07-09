@@ -20,8 +20,8 @@ public class NotificationProducer {
     private static final String ROUTING_KEY = "recruiter.notify";
     private final ObjectMapper objectMapper;
 
-    @Retry(name = "recruiterNotify", fallbackMethod = "fallbackSend")
-    @RateLimiter(name = "recruiterNotify", fallbackMethod = "fallbackSend")
+    @Retry(name = "recruiterNotify", fallbackMethod = "fallbackNotify")
+    @RateLimiter(name = "recruiterNotify", fallbackMethod = "fallbackNotify")
     @CircuitBreaker(name = "recruiterNotify", fallbackMethod = "fallbackNotify")
     public void notifyAdmin(NotificationMessage message) {
 
