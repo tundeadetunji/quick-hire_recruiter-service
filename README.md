@@ -1,59 +1,102 @@
 ![CI](https://github.com/tundeadetunji/quick-hire_recruiter-service/actions/workflows/ci.yml/badge.svg)
 
-## 📬 Messaging
-## 🧪 Testing
-## ⚙️ Concurrency & Transactions
-## 📘 Pagination
+# 🧑‍💼 Recruiter Service – QuickHire+ Microservices MVP  
 
+With QuickHire+, recruiters can register, create jobs, publish posts, and receive candidate applications.
 
-## 📬 Messaging
+📄 API Docs: View <a href="https://quick-hire-recruiter-service.onrender.com/swagger-ui/index.html">Swagger UI</a>
 
-This service both **sends and receives messages via RabbitMQ**.
+<br/>
+<br/>
 
-- When a recruiter registers or posts/updates a job, a `NotificationMessage` is sent.
-  - One message goes to the `recruiter.notify` queue (local logging).
-  - Another is forwarded to the `admin.notify` queue (for admin logs).
-- When a candidate applies via `candidate-service`, this service **receives** a notification from RabbitMQ.
+```  
++-------------------+       RabbitMQ        +-------------------+
+|  Candidate Service|  ───────────────▶     |  Recruiter Service|
+|                   |       🔔 Notify       |                   |
+| - Apply to jobs   |◀───────────────       | - Manage Jobs     |
++-------------------+                      ◀| - Notify Admin    |
+                                            +-------------------+
+                                                   │
+                                                   ▼
+                                       +------------------------+
+                                       |    Admin Service       |
+                                       | - Logs notifications   |
+                                       | - In-memory store      |
+                                       +------------------------+
+```
 
-To observe messaging:
-1. Trigger an application in `candidate-service` via Swagger.
-2. This service will log the message (via `NotificationListener`).
-3. Messages forwarded to `admin.notify` will appear via `/admin/messages`.
+---
 
-## 🧪 Testing
+🧰 Tech Stack:
+- ☕ Java 17
+- 🌱 Spring Boot 3.x
+- 📬 RabbitMQ (Messaging)
+- 🛡️ Resilience4j (Observability)
+- 🧪 JUnit 5, 🎭 Mockito (Testing)
+- 🗄️ H2 / PostgreSQL (DB Layer)
+- ⚙️ CI/CD via GitHub Actions
 
-This service uses **JUnit 5**, **Mockito**, and Spring’s `@WebMvcTest` for lightweight HTTP endpoint testing.
+---
 
-Tests are automatically executed through GitHub Actions.
+📬 Messaging  
+This service **sends and receives** RabbitMQ messages:
 
-### ✅ What’s Covered
+- Sends notifications for recruiter/job/post creation  
+- Receives application alerts from `candidate-service`  
+- Forwards messages to `admin-service` for logging
 
-- Creating job posts (`POST /api/v1/post/post`)
-- Sending notifications to RabbitMQ (`NotificationProducer`)
-- Registering recruiters and triggering notifications
-- Rollback behavior when notification delivery fails
+🔍 To observe:
+1. Apply via candidate-service  
+2. Message logged here  
+3. Forwarded to `admin.notify` (visible in `admin-service`)
 
-## ⚙️ Concurrency & Transactions
+---
 
-This service coordinates multiple transactional workflows involving recruiters, jobs, and job posts:
+🧪 Testing  
+Uses JUnit 5, Mockito, and Spring’s `@WebMvcTest`.  
+CI powered by GitHub Actions.
 
-- Creating or updating jobs
-- Publishing job posts and updating their status
-- Registering recruiters and moving candidate applications
+✅ What’s Covered
+- POST /api/v1/post/post  
+- NotificationProducer and rollback logic  
+- Recruiter registration + messaging
 
-All major service methods are annotated with `@Transactional` to ensure database consistency and atomic messaging via RabbitMQ.
+---
 
-Entities like `Job` and `Post` use **optimistic locking** with `@Version` to guard against race conditions — preventing concurrent edits (e.g., post status changes or job updates) from silently overwriting one another.
+⚙️ Concurrency & Transactions  
+Transactional integrity for:
 
-## 📘 Pagination
+- Job and post workflows  
+- Recruiter registration  
+- Application forwarding
 
-This service supports pagination on relevant endpoints using Spring’s `Pageable` abstraction:
+🛡️ Uses `@Transactional` with `@Version` fields to prevent race conditions.
 
-- `GET /api/v1/recruiter` returns paged recruiter records.
-- `GET /api/v1/post/{postId}/applications?status=APPLIED` supports paginated viewing of job post applications filtered by status.
+---
 
-To paginate results, include `page` and `size` query params:
+📊 Resilience4j Observability  
+Supports:
 
-```http
-GET /api/v1/post/3/applications?status=APPLIED&page=0&size=10
+✅ Circuit Breakers  
+🔁 Retry Policies  
+⏱️ Rate Limiting  
 
+Actuator endpoints (internal):
+- /actuator/resilience4j.circuitbreakers  
+- /actuator/resilience4j.retries  
+- /actuator/resilience4j.ratelimiters
+
+🧪 To test locally:
+- Provide env vars  
+- Or use `.env.local` with H2
+
+---
+
+📘 Pagination  
+Supports pagination on:
+
+- `GET /api/v1/recruiter`  
+- `GET /api/v1/post/{postId}/applications?status=APPLIED`
+
+Example:
+`GET /api/v1/post/3/applications?status=APPLIED&page=0&size=10`
