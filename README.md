@@ -1,8 +1,4 @@
 ![CI](https://github.com/tundeadetunji/quick-hire_recruiter-service/actions/workflows/ci.yml/badge.svg)
-![Java](https://img.shields.io/badge/Java-17-blue?logo=java)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen?logo=spring-boot)
-![RabbitMQ](https://img.shields.io/badge/Messaging-RabbitMQ-orange?logo=rabbitmq)
-![CI](https://github.com/tundeadetunji/quick-hire_recruiter-service/actions/workflows/ci.yml/badge.svg)
 
 # 🧑‍💼 Recruiter Service – QuickHire+ Microservices MVP  
 
@@ -28,6 +24,17 @@ With QuickHire+, recruiters can register, create jobs, publish posts, and receiv
                                        | - In-memory store      |
                                        +------------------------+
 ```
+
+---
+
+🧰 Tech Stack:
+- ☕ Java 17
+- 🌱 Spring Boot 3.x
+- 📬 RabbitMQ (Messaging)
+- 🛡️ Resilience4j (Observability)
+- 🧪 JUnit 5, 🎭 Mockito (Testing)
+- 🗄️ H2 / PostgreSQL (DB Layer)
+- ⚙️ CI/CD via GitHub Actions
 
 ---
 
