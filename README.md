@@ -8,7 +8,7 @@
 
 With QuickHire+, recruiters can register, create jobs, publish posts, and receive candidate applications.
 
-📄 API Docs: View Swagger UI
+📄 API Docs: View <a href="https://quick-hire-recruiter-service.onrender.com/swagger-ui/index.html">Swagger UI</a>
 
 <br/>
 <br/>
